@@ -2,9 +2,23 @@
     [switch]$allusers=$true,
     [switch]$deletetemp=$false,
     [switch]$v=$false,
-    [string]$user="-"
+    [string]$user="-",
+    [switch]$help=$false
 )
 
+if($help){
+    $h = "The util size calculate and clear 1c caches of users
+        1ccc.ps1 [-allusers] [-deletetemp] [-user username] [-help]
+        -allusers - processing caches of all user profiles (default)
+        -user username - processing caches username
+        -deletetemp - clear caches
+        -help - this help message
+    ";
+    Write-Output($h);
+    Exit;
+}
+
+# enable verbose mode if --v setted
 if($v){
     $VerbosePreference = "Continue";
 }
@@ -65,7 +79,6 @@ if ($allusers){
     $rs = $s + "AppData\Roaming\1C\1cv8";
     if(Test-Path $rs){
     
-   
         $r_1c_temp_size = [int]((Get-ChildItem -Recurse $rs | Measure-Object -Sum  Length).Sum  );
         $l_1c_temp_size = [int]((Get-ChildItem -Recurse $ls | Measure-Object -Sum Length).Sum  );
 
