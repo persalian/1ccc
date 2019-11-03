@@ -8,7 +8,7 @@
 
 if($help){
     $h = "The util size calculate and clear 1c caches of users
-        1ccc.ps1 [-allusers] [-deletetemp] [-user username] [-help]
+        1ccc.ps1 [-allusers | -user username ] [-deletetemp] [-help]
         -allusers - processing caches of all user profiles (default)
         -user username - processing caches username
         -deletetemp - clear caches
@@ -43,15 +43,15 @@ if ($allusers){
      if(Test-Path $rs){
     
    
-        $r_1c_temp_size = [int]((Get-ChildItem -Recurse $rs | Measure-Object -Sum  Length).Sum  );
-        $l_1c_temp_size = [int]((Get-ChildItem -Recurse $ls | Measure-Object -Sum Length).Sum  );
+        $r_1c_temp_size = [math]::round( [long]((Get-ChildItem -Recurse $rs | Measure-Object -Sum  Length).Sum  )/(1024*1024), 2);
+        $l_1c_temp_size = [math]::round( [long]((Get-ChildItem -Recurse $ls | Measure-Object -Sum Length).Sum  )/(1024*1024), 2);
 
         $1c_temp_sum = $1c_temp_sum + $l_1c_temp_size + $r_1c_temp_size;
 
-        Write-Verbose "local $ls size $l_1c_temp_size B";
-        Write-Verbose "roaming $rs size $r_1c_temp_size B";
+        Write-Verbose "local $ls size $l_1c_temp_size MB";
+        Write-Verbose "roaming $rs size $r_1c_temp_size MB";
 
-        Write-Host -NoNewline "$($u.Name) local $([string]$l_1c_temp_size) bytes roaming $([string]$r_1c_temp_size) bytes ";
+        Write-Host -NoNewline "$($u.Name) local $([string]$l_1c_temp_size) Mbytes roaming $([string]$r_1c_temp_size) Mbytes ";
     
         if($deletetemp){
                 $l_path = "$rs\*";
@@ -79,15 +79,15 @@ if ($allusers){
     $rs = $s + "AppData\Roaming\1C\1cv8";
     if(Test-Path $rs){
     
-        $r_1c_temp_size = [int]((Get-ChildItem -Recurse $rs | Measure-Object -Sum  Length).Sum  );
-        $l_1c_temp_size = [int]((Get-ChildItem -Recurse $ls | Measure-Object -Sum Length).Sum  );
+        $r_1c_temp_size = [math]::round( [long]((Get-ChildItem -Recurse $rs | Measure-Object -Sum Length).Sum  ) / (1024*1024), 2);
+        $l_1c_temp_size = [math]::round( [long]((Get-ChildItem -Recurse $ls | Measure-Object -Sum Length).Sum  ) / (1024*1024), 2);
 
         $1c_temp_sum = $1c_temp_sum + $l_1c_temp_size + $r_1c_temp_size;
 
-        Write-Verbose "local $ls size $l_1c_temp_size B";
-        Write-Verbose "roaming $rs size $r_1c_temp_size B";
+        Write-Verbose "local $ls size $l_1c_temp_size MB";
+        Write-Verbose "roaming $rs size $r_1c_temp_size MB";
 
-        Write-Host -NoNewline "$($user) local $([string]$l_1c_temp_size) bytes roaming $([string]$r_1c_temp_size) bytes ";
+        Write-Host -NoNewline "$($user) local $([string]$l_1c_temp_size) Mbytes roaming $([string]$r_1c_temp_size) Mbytes ";
     
         if($deletetemp){
                 $l_path = "$rs\*";
@@ -107,4 +107,4 @@ if ($allusers){
 
 }
 
-Write-Output "sum: $([int]$($1c_temp_sum / (1024 * 1024))) MB";
+Write-Output "sum: $([int]$($1c_temp_sum )) MB";
